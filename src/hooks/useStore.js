@@ -12,7 +12,10 @@ export const useStore = (domain = "store", cb) => {
   }, []);
 
   // fetch latest update from store
-  const getStore = () => JSON.parse(localStorage.getItem("artbots")) || {};
+  const getStore = React.useCallback(
+    () => JSON.parse(localStorage.getItem("artbots")) || {},
+    []
+  );
 
   // spread an object into a particular domain
   const setStoreItem = React.useCallback((domain, item) => {
