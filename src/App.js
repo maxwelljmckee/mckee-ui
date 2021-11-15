@@ -4,7 +4,7 @@ import "./App.css";
 import { QuickStoreDemo } from "./demos/QuickStoreDemo";
 import { createStore } from "./components/modules/QuickStore";
 
-createStore({ root: "demo", persist: true });
+createStore({ root: "demo" });
 
 function App() {
   return (
