@@ -1,10 +1,9 @@
-import logo from "./logo.svg";
 import { Box } from "@material-ui/core";
 import "./App.css";
 import { QuickStoreDemo } from "./demos/QuickStoreDemo";
-import { createStore } from "./components/modules/QuickStore";
+import qs from "./components/modules/quick-store/quick-store.js";
 
-createStore({ root: "demo" });
+qs.createStore({ root: "demo" });
 
 function App() {
   return (
