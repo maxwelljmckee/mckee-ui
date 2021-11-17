@@ -17,7 +17,6 @@ export const QuickStoreDemo = () => {
   const handleRemoveData = () => {
     qs.removeItem("nested1.nested2", ["d"]);
   };
-  console.log(qs);
 
   const checkSize = () => {
     const store = qs.getStore();
@@ -80,7 +79,7 @@ export const QuickStoreDemo = () => {
         variant="contained"
         color="primary"
         style={{ margin: "0.5rem" }}
-        // onClick={checkSize}
+        onClick={checkSize}
       >
         Calculate Storage
       </Button>

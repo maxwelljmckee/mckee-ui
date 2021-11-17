@@ -17,26 +17,30 @@ var StoreController = /** @class */ (function () {
         var _this = this;
         this.createStore = function (_a) {
             var _b = _a === void 0 ? {} : _a, _c = _b.root, root = _c === void 0 ? 'root' : _c, _d = _b.defaults, defaults = _d === void 0 ? {} : _d, _e = _b.config, config = _e === void 0 ? {} : _e;
-            if (root !== 'root') {
+            if (root !== 'root')
                 _this.root = root;
-                localStorage.removeItem('root');
-            }
-            // if (params.config) this.config = params.config;
+            if (config)
+                _this.config = config;
             var initial = localStorage.getItem(_this.root);
             if (!initial) {
                 localStorage.setItem(_this.root, JSON.stringify(defaults));
             }
         };
-        // fetch latest data from store
+        // fetch whole store
         this.getStore = function () { return JSON.parse(localStorage.getItem(_this.root) || ''); };
+        this.getStoreAsync = function () { return Promise.resolve().then(_this.getStore); };
         // fetch a particular item from store
         this.getItem = function (path) { return _.get(JSON.parse(localStorage.getItem(_this.root) || ''), path); };
+        this.getItemAsync = function (path) { return Promise.resolve().then(function () { return _this.getItem(path); }); };
         // spread an object into a particular path
         this.setItem = function (path, item) {
             var store = _this.getStore();
             var pathArray = path.split(".");
             var nextStore = _this._updateNestedItem(store, pathArray, item);
             localStorage.setItem(_this.root, JSON.stringify(nextStore));
+        };
+        this.setItemAsync = function (path, item) {
+            return Promise.resolve().then(function () { return _this.setItem(path, item); });
         };
         // recursively overwrite the value of a nested store item
         this._updateNestedItem = function (parent, pathArray, item) {
@@ -59,6 +63,9 @@ var StoreController = /** @class */ (function () {
             var nextStore = _this._removeNestedItem(store, pathArray, blacklist);
             localStorage.setItem(_this.root, JSON.stringify(nextStore));
         };
+        this.removeItemAsync = function (path, blacklist) {
+            return Promise.resolve().then(function () { return _this.removeItem(path, blacklist); });
+        };
         // recursively remove a nested store item
         this._removeNestedItem = function (parent, pathArray, blacklist) {
             var _a, _b;
@@ -80,7 +87,7 @@ var StoreController = /** @class */ (function () {
             return __assign(__assign({}, parent), (_b = {}, _b[key] = __assign({}, child), _b));
         };
         this.clear = function () { return localStorage.setItem(_this.root, JSON.stringify({})); };
-        localStorage.setItem('root', JSON.stringify({}));
+        this.clearAsync = function () { return Promise.resolve().then(_this.clear); };
         this.root = "root";
         this.config = {};
     }
