@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Button } from "@material-ui/core";
-import qs from "../components/modules/quick-store/quick-store";
+import nodux from "@no-dux/core";
 
 const item = {
   a: "a",
@@ -9,44 +9,23 @@ const item = {
   d: "d",
 };
 
+const payload = {
+  this: "this",
+  is: "is",
+  a: "s",
+  payload: "payload",
+};
+
 export const QuickStoreDemo = () => {
+  const { actions } = nodux;
   const handleSetData = () => {
-    qs.setItem("nested1.nested2", item);
+    // nodux.setItem(["nested1"], item);
+    actions.setPathArray();
   };
 
   const handleRemoveData = () => {
-    qs.removeItem("nested1.nested2", ["d"]);
-  };
-
-  const checkSize = () => {
-    const store = qs.getStore();
-    let data = "";
-    const queue = [store];
-    while (queue.length) {
-      const current = queue.shift();
-      for (let key in current) {
-        if (typeof current[key] === "string") {
-          data += current[key];
-        } else {
-          queue.push(current[key]);
-        }
-      }
-    }
-    alert(`
-      Approx. space used:
-      ${
-        data
-          ? ((data.length * 16) / (8 * 1024)).toFixed(2) + " KB"
-          : "Empty (0 KB)"
-      }
-      \n
-      Approx. space remaining:
-      ${
-        data
-          ? 5120 - ((data.length * 16) / (8 * 1024)).toFixed(2) + " KB"
-          : "5 MB"
-      }
-    `);
+    // nodux.removeItem(["payload"]);
+    actions.removeFromPayload();
   };
 
   return (
@@ -57,7 +36,7 @@ export const QuickStoreDemo = () => {
         style={{ margin: "0.5rem" }}
         onClick={handleSetData}
       >
-        Set Nested Data
+        Set Item
       </Button>
       <Button
         variant="contained"
@@ -65,13 +44,13 @@ export const QuickStoreDemo = () => {
         style={{ margin: "0.5rem" }}
         onClick={handleRemoveData}
       >
-        Remove Nested Data
+        Remove Item
       </Button>
       <Button
         variant="contained"
         color="primary"
         style={{ margin: "0.5rem" }}
-        onClick={qs.clear}
+        onClick={nodux.clear}
       >
         Clear Store
       </Button>
@@ -79,7 +58,7 @@ export const QuickStoreDemo = () => {
         variant="contained"
         color="primary"
         style={{ margin: "0.5rem" }}
-        onClick={checkSize}
+        onClick={nodux.getSize}
       >
         Calculate Storage
       </Button>

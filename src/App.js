@@ -1,9 +1,11 @@
 import { Box } from "@material-ui/core";
 import "./App.css";
 import { QuickStoreDemo } from "./demos/QuickStoreDemo";
-import qs from "./components/modules/quick-store/quick-store.js";
+import nodux from "@no-dux/core";
+import { createDemoActions } from "./demos/demoActions";
 
-qs.createStore({ root: "demo" });
+createDemoActions();
+nodux.createStore({ root: "demo" });
 
 function App() {
   return (
