@@ -1,5 +1,5 @@
 import React from "react";
-import { nodux } from "@no-dux/core";
+import { nodux, _omit } from "@no-dux/core";
 
 export const useStore = (path) => {
   const [watchlist, setWatchlist] = React.useState({});
@@ -12,7 +12,7 @@ export const useStore = (path) => {
 
   React.useEffect(() => {
     const initializeWatchlist = () => {
-      if (!path) return setWatchlist(nodux.getStore());
+      if (!path) return setWatchlist({ [nodux.root]: nodux.getStore() });
       setWatchlist(
         pathList.reduce((acc, key) => {
           return {
@@ -22,18 +22,17 @@ export const useStore = (path) => {
         }, {})
       );
     };
-
     initializeWatchlist();
     // eslint-disable-next-line
   }, []);
 
   React.useEffect(() => {
     const onStoreUpdate = (event) => {
-      if (!path) return setWatchlist(nodux.getStore());
-      const modified = event.detail;
+      if (!path) return setWatchlist({ [nodux.root]: nodux.getStore() });
       Object.keys(watchlist).forEach((key) => {
-        if (modified.startsWith(key)) {
-          setWatchlist({ ...watchlist, [key]: nodux.getItem(key) });
+        const targetValue = nodux.getItem(key);
+        if (watchlist[key] !== targetValue) {
+          setWatchlist({ ...watchlist, [key]: targetValue });
         }
       });
     };
@@ -46,10 +45,21 @@ export const useStore = (path) => {
     // eslint-disable-next-line
   }, [watchlist]);
 
-  return !path
-    ? watchlist
-    : Object.keys(watchlist).reduce((acc, key) => {
-        const trimmed = key.split(".").pop();
-        return { ...acc, [trimmed]: watchlist[key] };
-      }, {});
+  return Object.keys(watchlist).reduce((acc, key) => {
+    const trimmed = key.split(".").pop();
+    return { ...acc, [trimmed]: watchlist[key] };
+  }, {});
+};
+
+export const useAutosave = (path, whitelist, blacklist = []) => {
+  const watchlist = React.useMemo(
+    () => _omit(whitelist, blacklist),
+    // eslint-disable-next-line
+    [whitelist]
+  );
+  React.useEffect(
+    () => nodux.silentUpdate(path, watchlist),
+    // eslint-disable-next-line
+    [...Object.values(watchlist)]
+  );
 };

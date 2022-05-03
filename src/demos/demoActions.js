@@ -13,7 +13,7 @@ const removeFromPayload = () => nodux.removeItem("payload", "this");
 const removeBananas = () => nodux.removeItem("banana1.banana2");
 
 export const createDemoActions = () =>
-  nodux.createActions({
+  nodux.registerPartitionedActions("demoActions", {
     setBananas,
     setPathArray,
     setPayload,
